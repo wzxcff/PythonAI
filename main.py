@@ -68,6 +68,7 @@ y = utils.to_categorical(y)
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 model.fit(X.toarray(), y, epochs=120, batch_size=2)
 
+model.save("chatbot_python_model.h5")
 
 def preprocess_query(query):
     query = preprocess_text(query)
