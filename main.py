@@ -9,6 +9,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
 import pandas as pd
+import pickle
 
 # data = [
 #     {"question": "How are you?", "answer": "Good, what about you?"},
@@ -19,7 +20,7 @@ import pandas as pd
 #     {"question": "I'm years old", "answer": "Ohhhh, that's great!"}
 # ]
 
-data = pd.read_csv("train.csv")
+data = pd.read_csv("general_knowledge_qa.csv")
 
 
 def tokenize_sentence(sentence):
@@ -66,9 +67,10 @@ model = Sequential([
 y = utils.to_categorical(y)
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.fit(X.toarray(), y, epochs=120, batch_size=2)
+model.fit(X.toarray(), y, epochs=50, batch_size=2)
 
-model.save("chatbot_python_model.h5")
+model.save("chatbot_python_model.keras")
+
 
 def preprocess_query(query):
     query = preprocess_text(query)
@@ -82,7 +84,10 @@ def get_response(query):
     return label_encoder.inverse_transform([predicted_class])[0]
 
 
-while True:
-    query = str(input("Ваш запрос: "))
-    response = get_response(query)
-    print(f"Ответ: {response}")
+with open("vectorizer.pkl", "wb") as file:
+    pickle.dump(vectorizer, file)
+
+with open("label_encoder.pkl", "wb") as file:
+    pickle.dump(label_encoder, file)
+
+
